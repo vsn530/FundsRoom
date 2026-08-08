@@ -7,7 +7,9 @@ const JWT_SECRET = process.env.JWT_SECRET || 'secret';
 
 export const login = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { email, password } = req.body;
+    let { email, password } = req.body;
+    email = email?.trim();
+    console.log(`Login attempt for email: '${email}'`);
 
     const user = await prisma.user.findUnique({
       where: { email },
