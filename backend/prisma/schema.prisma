@@ -3,12 +3,12 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id        String   @id @default(uuid())
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
   name      String
   email     String   @unique
   password  String
@@ -18,7 +18,7 @@ model User {
 }
 
 model Customer {
-  id           String    @id @default(uuid())
+  id           String    @id @default(auto()) @map("_id") @db.ObjectId
   name         String
   mobile       String
   email        String?
@@ -36,7 +36,7 @@ model Customer {
 }
 
 model Product {
-  id            String   @id @default(uuid())
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
   name          String
   sku           String   @unique
   category      String
@@ -52,8 +52,8 @@ model Product {
 }
 
 model StockMovement {
-  id        String   @id @default(uuid())
-  productId String
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  productId String   @db.ObjectId
   quantity  Int
   type      String   // IN, OUT
   reason    String?
@@ -64,9 +64,9 @@ model StockMovement {
 }
 
 model Challan {
-  id            String   @id @default(uuid())
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
   challanNo     String   @unique
-  customerId    String
+  customerId    String   @db.ObjectId
   totalQuantity Int      @default(0)
   status        String   @default("DRAFT") // DRAFT, CONFIRMED, CANCELLED
   createdBy     String
@@ -77,9 +77,9 @@ model Challan {
 }
 
 model ChallanItem {
-  id            String @id @default(uuid())
-  challanId     String
-  productId     String
+  id            String @id @default(auto()) @map("_id") @db.ObjectId
+  challanId     String @db.ObjectId
+  productId     String @db.ObjectId
   quantity      Int
   snapshotPrice Float
   snapshotName  String
