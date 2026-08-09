@@ -67,7 +67,7 @@ export const createCustomer = async (req: AuthRequest, res: Response): Promise<v
     res.status(201).json(customer);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      res.status(400).json({ message: 'Validation error', errors: error.errors });
+      res.status(400).json({ message: 'Validation error', errors: (error as any).errors });
       return;
     }
     res.status(500).json({ message: 'Server error' });
@@ -84,7 +84,7 @@ export const updateCustomer = async (req: AuthRequest, res: Response): Promise<v
     res.json(customer);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      res.status(400).json({ message: 'Validation error', errors: error.errors });
+      res.status(400).json({ message: 'Validation error', errors: (error as any).errors });
       return;
     }
     res.status(500).json({ message: 'Server error' });

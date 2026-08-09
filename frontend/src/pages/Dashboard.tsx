@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
-import { Users, Package, FileText, LayoutDashboard, ShieldAlert } from 'lucide-react';
+import { Users, Package, FileText, ShieldAlert } from 'lucide-react';
 import './Dashboard.css';
 
 interface DashboardStats {

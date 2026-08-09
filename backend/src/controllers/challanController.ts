@@ -124,7 +124,7 @@ export const createChallan = async (req: AuthRequest, res: Response): Promise<vo
     res.status(201).json(result);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      res.status(400).json({ message: 'Validation error', errors: error.errors });
+      res.status(400).json({ message: 'Validation error', errors: (error as any).errors });
       return;
     }
     console.error(error);

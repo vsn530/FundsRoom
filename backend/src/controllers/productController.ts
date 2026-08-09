@@ -71,7 +71,7 @@ export const createProduct = async (req: AuthRequest, res: Response): Promise<vo
     res.status(201).json(product);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      res.status(400).json({ message: 'Validation error', errors: error.errors });
+      res.status(400).json({ message: 'Validation error', errors: (error as any).errors });
       return;
     }
     res.status(500).json({ message: 'Server error' });
@@ -88,7 +88,7 @@ export const updateProduct = async (req: AuthRequest, res: Response): Promise<vo
     res.json(product);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      res.status(400).json({ message: 'Validation error', errors: error.errors });
+      res.status(400).json({ message: 'Validation error', errors: (error as any).errors });
       return;
     }
     res.status(500).json({ message: 'Server error' });
@@ -147,7 +147,7 @@ export const addStockMovement = async (req: AuthRequest, res: Response): Promise
     res.status(201).json({ movement: result[0], newStock: result[1].stock });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      res.status(400).json({ message: 'Validation error', errors: error.errors });
+      res.status(400).json({ message: 'Validation error', errors: (error as any).errors });
       return;
     }
     res.status(500).json({ message: 'Server error' });
