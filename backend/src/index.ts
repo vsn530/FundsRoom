@@ -1,5 +1,4 @@
 import express from 'express';
-import path from 'path';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes';
@@ -32,15 +31,6 @@ app.use('/api/dashboard', dashboardRoutes);
 // Basic health check route
 app.get('/health', (req, res) => {
   res.json({ status: 'OK', message: 'Mini ERP + CRM API is running' });
-});
-
-// Serve static frontend files
-const frontendDistPath = path.join(__dirname, '../../frontend/dist');
-app.use(express.static(frontendDistPath));
-
-// Catch-all route for React Router (must be placed AFTER API and static routes)
-app.get('*', (req, res) => {
-  res.sendFile(path.join(frontendDistPath, 'index.html'));
 });
 
 app.listen(PORT, () => {
