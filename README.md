@@ -1,5 +1,7 @@
 # Mini ERP + CRM Operations Portal
 
+**Live Demo:** [https://funds-room-ten.vercel.app/login](https://funds-room-ten.vercel.app/login)
+
 A complete Full Stack ERP + CRM solution built with Node.js, Express, Prisma, and React (Vite).
 
 ## Tech Stack
