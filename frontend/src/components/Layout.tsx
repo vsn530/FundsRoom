@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Users, Package, FileText, LogOut, LayoutDashboard } from 'lucide-react';
+import { Users, Package, FileText, LogOut, LayoutDashboard, ShieldAlert } from 'lucide-react';
 import './Layout.css';
 
 const Sidebar: React.FC = () => {
@@ -46,6 +46,12 @@ const Sidebar: React.FC = () => {
           <FileText size={20} />
           <span>Sales Challans</span>
         </NavLink>
+        {user?.role === 'ADMIN' && (
+          <NavLink to="/users" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
+            <ShieldAlert size={20} />
+            <span>User Management</span>
+          </NavLink>
+        )}
       </nav>
       
       <div className="sidebar-footer">

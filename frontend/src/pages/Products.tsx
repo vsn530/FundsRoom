@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../services/api';
-import { Search, Plus, Edit, ArrowRightLeft } from 'lucide-react';
+import { Search, Plus, Edit, ArrowRightLeft, X } from 'lucide-react';
 
 interface Product {
   id: string;
@@ -16,6 +16,16 @@ const Products: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
+  const [isAdding, setIsAdding] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+  const [newProduct, setNewProduct] = useState({
+    name: '',
+    sku: '',
+    category: 'Electronics',
+    unitPrice: '',
+    minStockAlert: '10',
+    location: '',
+  });
 
   const fetchProducts = async () => {
     try {
@@ -28,6 +38,30 @@ const Products: React.FC = () => {
     }
   };
 
+  const handleAddProduct = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitError('');
+    try {
+      await api.post('/products', {
+        ...newProduct,
+        unitPrice: parseFloat(newProduct.unitPrice),
+        minStockAlert: parseInt(newProduct.minStockAlert, 10) || 0,
+      });
+      setIsAdding(false);
+      setNewProduct({
+        name: '',
+        sku: '',
+        category: 'Electronics',
+        unitPrice: '',
+        minStockAlert: '10',
+        location: '',
+      });
+      fetchProducts();
+    } catch (error: any) {
+      setSubmitError(error.response?.data?.message || 'Failed to add product');
+    }
+  };
+
   useEffect(() => {
     fetchProducts();
   }, [search]);
@@ -36,7 +70,7 @@ const Products: React.FC = () => {
     <div className="page-container">
       <div className="page-header">
         <h1>Inventory</h1>
-        <button className="btn-primary">
+        <button className="btn-primary" onClick={() => setIsAdding(true)}>
           <Plus size={18} style={{ marginRight: '8px', verticalAlign: 'middle' }} />
           Add Product
         </button>
@@ -110,6 +144,90 @@ const Products: React.FC = () => {
           </div>
         )}
       </div>
+
+      {isAdding && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h2>Add New Product</h2>
+              <button className="icon-btn" onClick={() => setIsAdding(false)}>
+                <X size={20} />
+              </button>
+            </div>
+            
+            <form onSubmit={handleAddProduct} className="modal-form">
+              {submitError && <div className="error-alert">{submitError}</div>}
+              <div className="form-group">
+                <label>Name *</label>
+                <input 
+                  type="text" 
+                  className="input-field" 
+                  value={newProduct.name}
+                  onChange={(e) => setNewProduct({...newProduct, name: e.target.value})}
+                  required 
+                />
+              </div>
+              <div className="form-group">
+                <label>SKU *</label>
+                <input 
+                  type="text" 
+                  className="input-field" 
+                  value={newProduct.sku}
+                  onChange={(e) => setNewProduct({...newProduct, sku: e.target.value})}
+                  required 
+                />
+              </div>
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Category *</label>
+                  <input 
+                    type="text" 
+                    className="input-field" 
+                    value={newProduct.category}
+                    onChange={(e) => setNewProduct({...newProduct, category: e.target.value})}
+                    required 
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Unit Price ($) *</label>
+                  <input 
+                    type="number" 
+                    step="0.01"
+                    className="input-field" 
+                    value={newProduct.unitPrice}
+                    onChange={(e) => setNewProduct({...newProduct, unitPrice: e.target.value})}
+                    required 
+                  />
+                </div>
+              </div>
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Min Stock Alert</label>
+                  <input 
+                    type="number" 
+                    className="input-field" 
+                    value={newProduct.minStockAlert}
+                    onChange={(e) => setNewProduct({...newProduct, minStockAlert: e.target.value})}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Location</label>
+                  <input 
+                    type="text" 
+                    className="input-field" 
+                    value={newProduct.location}
+                    onChange={(e) => setNewProduct({...newProduct, location: e.target.value})}
+                  />
+                </div>
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn-outline" onClick={() => setIsAdding(false)}>Cancel</button>
+                <button type="submit" className="btn-primary">Save Product</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -2,23 +2,16 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import Login from './pages/Login';
+import Signup from './pages/Signup';
 import Layout from './components/Layout';
 import ProtectedRoute from './components/ProtectedRoute';
 
 import Customers from './pages/Customers';
 import Products from './pages/Products';
 import Challans from './pages/Challans';
+import Users from './pages/Users';
 
-const Dashboard = () => (
-  <div className="page-container">
-    <div className="page-header">
-      <h1>Dashboard</h1>
-    </div>
-    <div className="card">
-      <p>Welcome to Mini ERP + CRM Portal.</p>
-    </div>
-  </div>
-);
+import Dashboard from './pages/Dashboard';
 
 const App: React.FC = () => {
   return (
@@ -26,6 +19,7 @@ const App: React.FC = () => {
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
           
           <Route element={<ProtectedRoute />}>
             <Route element={<Layout />}>
@@ -34,6 +28,7 @@ const App: React.FC = () => {
               <Route path="/customers" element={<Customers />} />
               <Route path="/products" element={<Products />} />
               <Route path="/challans" element={<Challans />} />
+              <Route path="/users" element={<Users />} />
             </Route>
           </Route>
           
