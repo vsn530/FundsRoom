@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../services/api';
-import { Plus, FileText, X, Trash2 } from 'lucide-react';
+import { Plus, FileText, X, Trash2, Check, XCircle } from 'lucide-react';
 
 interface Customer {
   id: string;
@@ -102,6 +102,16 @@ const Challans: React.FC = () => {
     }
   };
 
+  const handleUpdateStatus = async (id: string, status: string) => {
+    if (!window.confirm(`Are you sure you want to mark this challan as ${status}?`)) return;
+    try {
+      await api.put(`/challans/${id}`, { status });
+      fetchChallans();
+    } catch (error: any) {
+      alert(error.response?.data?.message || 'Failed to update challan status');
+    }
+  };
+
   useEffect(() => {
     fetchChallans();
     fetchFormData();
@@ -156,6 +166,12 @@ const Challans: React.FC = () => {
                       </td>
                       <td className="actions">
                         <button className="icon-btn" title="View"><FileText size={18} /></button>
+                        {c.status === 'DRAFT' && (
+                          <>
+                            <button className="icon-btn" title="Confirm Challan" onClick={() => handleUpdateStatus(c.id, 'CONFIRMED')} style={{ color: 'var(--success)' }}><Check size={18} /></button>
+                            <button className="icon-btn" title="Cancel Challan" onClick={() => handleUpdateStatus(c.id, 'CANCELLED')} style={{ color: 'var(--danger)' }}><XCircle size={18} /></button>
+                          </>
+                        )}
                       </td>
                     </tr>
                   ))

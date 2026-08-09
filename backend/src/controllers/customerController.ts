@@ -6,14 +6,14 @@ import { z } from 'zod';
 const customerSchema = z.object({
   name: z.string().min(1, "Name is required"),
   mobile: z.string().min(10, "Valid mobile is required"),
-  email: z.string().email().optional().or(z.literal('')),
-  businessName: z.string().optional(),
-  gstNumber: z.string().optional(),
-  type: z.enum(['RETAIL', 'WHOLESALE', 'DISTRIBUTOR']).optional(),
-  address: z.string().optional(),
-  status: z.enum(['LEAD', 'ACTIVE', 'INACTIVE']).optional(),
-  followUpDate: z.string().optional().transform(val => val ? new Date(val) : undefined),
-  notes: z.string().optional(),
+  email: z.string().email().nullish().or(z.literal('')),
+  businessName: z.string().nullish(),
+  gstNumber: z.string().nullish(),
+  type: z.enum(['RETAIL', 'WHOLESALE', 'DISTRIBUTOR']).nullish(),
+  address: z.string().nullish(),
+  status: z.enum(['LEAD', 'ACTIVE', 'INACTIVE']).nullish(),
+  followUpDate: z.string().nullish().transform(val => val ? new Date(val) : undefined),
+  notes: z.string().nullish(),
 });
 
 export const getCustomers = async (req: AuthRequest, res: Response): Promise<void> => {

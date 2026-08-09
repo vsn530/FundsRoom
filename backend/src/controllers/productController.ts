@@ -8,8 +8,8 @@ const productSchema = z.object({
   sku: z.string().min(1, "SKU is required"),
   category: z.string().min(1, "Category is required"),
   unitPrice: z.number().min(0, "Price must be >= 0"),
-  minStockAlert: z.number().min(0).optional(),
-  location: z.string().optional(),
+  minStockAlert: z.number().min(0).nullish(),
+  location: z.string().nullish(),
 });
 
 export const getProducts = async (req: AuthRequest, res: Response): Promise<void> => {

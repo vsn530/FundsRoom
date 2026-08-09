@@ -17,6 +17,8 @@ const Products: React.FC = () => {
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
   const [isAdding, setIsAdding] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [submitError, setSubmitError] = useState('');
   const [newProduct, setNewProduct] = useState({
     name: '',
@@ -59,6 +61,30 @@ const Products: React.FC = () => {
       fetchProducts();
     } catch (error: any) {
       setSubmitError(error.response?.data?.message || 'Failed to add product');
+    }
+  };
+
+  const handleEditClick = (product: Product) => {
+    setEditingProduct(product);
+    setIsEditing(true);
+    setSubmitError('');
+  };
+
+  const handleUpdateProduct = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingProduct) return;
+    setSubmitError('');
+    try {
+      await api.put(`/products/${editingProduct.id}`, {
+        ...editingProduct,
+        unitPrice: parseFloat(editingProduct.unitPrice as any),
+        minStockAlert: parseInt(editingProduct.minStockAlert as any, 10) || 0,
+      });
+      setIsEditing(false);
+      setEditingProduct(null);
+      fetchProducts();
+    } catch (error: any) {
+      setSubmitError(error.response?.data?.message || 'Failed to update product');
     }
   };
 
@@ -134,7 +160,7 @@ const Products: React.FC = () => {
                       </td>
                       <td className="actions">
                         <button className="icon-btn" title="Stock Movement"><ArrowRightLeft size={18} /></button>
-                        <button className="icon-btn" title="Edit"><Edit size={18} /></button>
+                        <button className="icon-btn" title="Edit" onClick={() => handleEditClick(p)}><Edit size={18} /></button>
                       </td>
                     </tr>
                   ))
@@ -223,6 +249,81 @@ const Products: React.FC = () => {
               <div className="modal-footer">
                 <button type="button" className="btn-outline" onClick={() => setIsAdding(false)}>Cancel</button>
                 <button type="submit" className="btn-primary">Save Product</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {isEditing && editingProduct && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h2>Edit Product</h2>
+              <button className="icon-btn" onClick={() => setIsEditing(false)}>
+                <X size={20} />
+              </button>
+            </div>
+            
+            <form onSubmit={handleUpdateProduct} className="modal-form">
+              {submitError && <div className="error-alert">{submitError}</div>}
+              <div className="form-group">
+                <label>Name *</label>
+                <input 
+                  type="text" 
+                  className="input-field" 
+                  value={editingProduct.name}
+                  onChange={(e) => setEditingProduct({...editingProduct, name: e.target.value})}
+                  required 
+                />
+              </div>
+              <div className="form-group">
+                <label>SKU *</label>
+                <input 
+                  type="text" 
+                  className="input-field" 
+                  value={editingProduct.sku}
+                  onChange={(e) => setEditingProduct({...editingProduct, sku: e.target.value})}
+                  required 
+                />
+              </div>
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Category *</label>
+                  <input 
+                    type="text" 
+                    className="input-field" 
+                    value={editingProduct.category}
+                    onChange={(e) => setEditingProduct({...editingProduct, category: e.target.value})}
+                    required 
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Unit Price ($) *</label>
+                  <input 
+                    type="number" 
+                    step="0.01"
+                    className="input-field" 
+                    value={editingProduct.unitPrice}
+                    onChange={(e) => setEditingProduct({...editingProduct, unitPrice: e.target.value as any})}
+                    required 
+                  />
+                </div>
+              </div>
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Min Stock Alert</label>
+                  <input 
+                    type="number" 
+                    className="input-field" 
+                    value={editingProduct.minStockAlert}
+                    onChange={(e) => setEditingProduct({...editingProduct, minStockAlert: e.target.value as any})}
+                  />
+                </div>
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn-outline" onClick={() => setIsEditing(false)}>Cancel</button>
+                <button type="submit" className="btn-primary">Update Product</button>
               </div>
             </form>
           </div>
